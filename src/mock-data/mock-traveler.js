@@ -1,4 +1,4 @@
-export const mockUsers = [
+export const mockTravelers = [
   {
     "id": 1,
     "name": "Peter Parker",
