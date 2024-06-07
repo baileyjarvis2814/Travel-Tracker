@@ -1,4 +1,16 @@
 const createDestination = (destinationData) => {
+  if (
+    !destinationData ||
+      typeof destinationData.id !== 'number' ||
+      typeof destinationData.destination !== 'string' ||
+      typeof destinationData.estimatedLodgingCostPerDay !== 'number' ||
+      typeof destinationData.estimatedFlightCostPerPerson !== 'number' ||
+      typeof destinationData.image !== 'string' ||
+      typeof destinationData.alt !== 'string'
+  ) {
+    return {};
+  }
+  
   return {
     id: destinationData.id,
     destination: destinationData.destination,
@@ -8,5 +20,6 @@ const createDestination = (destinationData) => {
     alt: destinationData.alt,
   };
 };
-    
+  
 export default createDestination;
+  
