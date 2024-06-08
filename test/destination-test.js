@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import createDestination from '../src/destination-functions.js';
+import createDestination from '../src/destination-object.js';
 import { mockDestination } from '../src/mock-data/mock-destination.js';
 
 describe('createDestination', () => {

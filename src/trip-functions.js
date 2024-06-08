@@ -1,30 +1,30 @@
-const createTrip = (tripData) => {
-  if (
-    !tripData ||
-      typeof tripData.id !== 'number' ||
-      typeof tripData.userID !== 'number' ||
-      typeof tripData.destinationID !== 'number' ||
-      typeof tripData.travelers !== 'number' ||
-      typeof tripData.date !== 'string' ||
-      typeof tripData.duration !== 'number' ||
-      typeof tripData.status !== 'string' ||
-      !Array.isArray(tripData.suggestedActivities)
-  ) {
-    return {};
-  }
-  
+/* eslint-disable max-len */
+import dayjs from 'dayjs';
+
+export const filterTripsByUser = (tripData, userId) => tripData.filter(trip => trip.userID === userId);
+
+export const sortTripsByDateDesc = (trips) => trips.sort((first, last) => dayjs(last.date).valueOf() - dayjs(first.date).valueOf());
+
+export const filterPastTrips = (trips) => trips.filter(trip => dayjs(trip.date).format('YYYY/MM/DD') < dayjs().format('YYYY/MM/DD'));
+
+export const filterUpcomingTrips = (trips) => trips.filter(trip => dayjs(trip.date).format('YYYY/MM/DD') >= dayjs().format('YYYY/MM/DD'));
+
+export const filterApprovedTrips = (trips) => trips.filter(trip => trip.status === 'approved');
+
+export const filterPendingTrips = (trips) => trips.filter(trip => trip.status === 'pending');
+
+export const getAllTravelerTrips = (traveler, tripData) => sortTripsByDateDesc(filterTripsByUser(tripData, traveler.id));
+
+export const createTripRepository = (traveler, tripData) => {
+  const allTravelerTrips = getAllTravelerTrips(traveler, tripData);
+  const pastTrips = filterPastTrips(allTravelerTrips);
+  const upcomingTrips = filterApprovedTrips(filterUpcomingTrips(allTravelerTrips));
+  const pendingTrips = filterPendingTrips(filterUpcomingTrips(allTravelerTrips));
+
   return {
-    id: tripData.id,
-    userID: tripData.userID,
-    destinationID: tripData.destinationID,
-    travelers: tripData.travelers,
-    date: tripData.date,
-    duration: tripData.duration,
-    status: tripData.status,
-    suggestedActivities: tripData.suggestedActivities,
+    allTravelerTrips,
+    pastTrips,
+    upcomingTrips,
+    pendingTrips,
   };
 };
-  
-export default createTrip;
-  
-  
