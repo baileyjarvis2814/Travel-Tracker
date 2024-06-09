@@ -1,4 +1,4 @@
-const createTrip = (tripData) => {
+export const createTrip = (tripData) => {
   if (
     !tripData ||
     typeof tripData.id !== 'number' ||
@@ -25,4 +25,3 @@ const createTrip = (tripData) => {
   };
 };
 
-export default createTrip;

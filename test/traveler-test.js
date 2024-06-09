@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import createTraveler from '../src/traveler-objects.js';
+import { createTraveler } from '../src/traveler-objects.js';
 import { mockTravelers } from '../src/mock-data/mock-Traveler.js';
 
 describe('createTraveler', () => {
