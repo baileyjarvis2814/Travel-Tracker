@@ -1,4 +1,4 @@
-const createDestination = (destinationData) => {
+export const createDestination = (destinationData) => {
   if (
     !destinationData ||
       typeof destinationData.id !== 'number' ||
@@ -21,5 +21,4 @@ const createDestination = (destinationData) => {
   };
 };
   
-export default createDestination;
   

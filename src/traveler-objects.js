@@ -1,4 +1,4 @@
-const createTraveler = (travelerData) => {
+export const createTraveler = (travelerData) => {
   if (
     !travelerData ||
       typeof travelerData.id !== 'number' ||
@@ -14,6 +14,5 @@ const createTraveler = (travelerData) => {
     travelerType: travelerData.travelerType,
   };
 };
-  
-export default createTraveler;
+
   
