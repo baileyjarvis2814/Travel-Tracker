@@ -7,20 +7,20 @@ describe('createTrip', () => {
 
   beforeEach(() => {
     const mockTripCopy = mockTrip
-    console.log('Mock Trip Data (beforeEach):', JSON.stringify(mockTripCopy, null, 2));
+    // console.log('Mock Trip Data (beforeEach):', JSON.stringify(mockTripCopy, null, 2));
 
     validTripData = mockTripCopy[0];
     anotherValidTripData = mockTripCopy[1];
     invalidTripData = {};
 
-    console.log('Valid Trip Data (beforeEach):', validTripData);
-    console.log('Another Valid Trip Data (beforeEach):', anotherValidTripData);
-    console.log('Invalid Trip Data (beforeEach):', invalidTripData);
+    // console.log('Valid Trip Data (beforeEach):', validTripData);
+    // console.log('Another Valid Trip Data (beforeEach):', anotherValidTripData);
+    // console.log('Invalid Trip Data (beforeEach):', invalidTripData);
   });
 
   it('should create a trip object with correct properties (happy path)', () => {
     const trip = createTrip(validTripData);
-    console.log('Created Trip (happy path 1):', trip);
+    // console.log('Created Trip (happy path 1):', trip);
 
     expect(trip).to.be.an('object');
     expect(trip).to.have.property('id', 1);
@@ -35,7 +35,7 @@ describe('createTrip', () => {
 
   it('should create another trip object with correct properties (happy path)', () => {
     const trip = createTrip(anotherValidTripData);
-    console.log('Created Trip (happy path 2):', trip); 
+    // console.log('Created Trip (happy path 2):', trip); 
 
     expect(trip).to.be.an('object');
     expect(trip).to.have.property('id', 2);
@@ -50,7 +50,7 @@ describe('createTrip', () => {
 
   it('should handle invalid data gracefully (sad path)', () => {
     const trip = createTrip(invalidTripData);
-    console.log('Created Trip (sad path 1):', trip);
+    // console.log('Created Trip (sad path 1):', trip);
 
     expect(trip).to.be.an('object');
     expect(trip).to.not.have.property('id');
@@ -66,7 +66,7 @@ describe('createTrip', () => {
   it('should handle another set of invalid data gracefully (sad path)', () => {
     const invalidTripData2 = { id: 'invalid', userID: 'wrong', destinationID: null, travelers: 'invalid', date: 12345, duration: 'wrong', status: false, suggestedActivities: 'not an array' };
     const trip = createTrip(invalidTripData2);
-    console.log('Created Trip (sad path 2):', trip);
+    // console.log('Created Trip (sad path 2):', trip);
 
     expect(trip).to.be.an('object');
     expect(trip).to.not.have.property('id');

@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import dayjs from 'dayjs';
 import {
   filterTripsByUser,
   sortTripsByDateDesc,
@@ -7,19 +8,23 @@ import {
   filterApprovedTrips,
   filterPendingTrips,
   getAllTravelerTrips,
-  createTripRepository
+  createTripRepository,
+  getTravelCostForYearToDate,
+  getTotalSpentForYearToDate
 } from '../src/trip-functions.js';
 import { mockTrip } from '../src/mock-data/mock-trip.js';
+import { mockDestination } from '../src/mock-data/mock-destination.js';
 import { mockTravelers } from '../src/mock-data/mock-traveler.js';
 
 describe('Trip Functions', () => {
-  let traveler, anotherTraveler, trips, emptyTrips;
+  let traveler, anotherTraveler, trips, emptyTrips, destinationData;
 
   beforeEach(() => {
     traveler = mockTravelers[0];
     anotherTraveler = { id: 99, name: 'Nonexistent User' };
     trips = [...mockTrip];
     emptyTrips = [];
+    destinationData = [...mockDestination];
   });
 
   describe('filterTripsByUser', () => {
@@ -68,7 +73,7 @@ describe('Trip Functions', () => {
       const result = filterUpcomingTrips(trips);
       expect(result).to.be.an('array').that.is.not.empty;
       result.forEach(trip => {
-        expect(trip.date).to.be.at.least(dayjs().format('YYYY/MM/DD'));
+        expect(dayjs(trip.date).isAfter(dayjs(), 'day')).to.be.true;
       });
     });
 
@@ -144,4 +149,33 @@ describe('Trip Functions', () => {
       expect(tripRepository.pendingTrips).to.be.an('array').that.is.empty;
     });
   });
+
+  describe('getTravelCostForYearToDate', () => {
+    it('should calculate the travel cost for the year to date (happy path)', () => {
+      const result = getTravelCostForYearToDate(trips, destinationData, 'flightCost', 'travelers');
+      expect(result).to.be.a('string');
+      expect(parseFloat(result)).to.be.a('number');
+    });
+
+    it('should return 0.00 if there are no matching trips (sad path)', () => {
+      const result = getTravelCostForYearToDate(emptyTrips, destinationData, 'flightCost', 'travelers');
+      expect(result).to.equal('0.00');
+    });
+  });
+
+  describe('getTotalSpentForYearToDate', () => {
+    it('should calculate the total spent for the year to date (happy path)', () => {
+      const expectedSpent = ((7 * 500 + 2 * 1000) + (5 * 150 + 4 * 400) + (8 * 250 + 3 * 300) + (9 * 100 + 1 * 1200)) * 1.1;
+      const result = getTotalSpentForYearToDate(trips, destinationData);
+      console.log('Expected Spent:', expectedSpent); // Add logging to inspect expectedSpent
+      console.log('Result:', result); // Add logging to inspect result
+      expect(result).to.equal(expectedSpent.toFixed(2));
+    });
+  
+    it('should return 0.00 if there are no matching trips (sad path)', () => {
+      const result = getTotalSpentForYearToDate(emptyTrips, destinationData);
+      expect(result).to.equal('0.00');
+    });
+  });
 });
+
