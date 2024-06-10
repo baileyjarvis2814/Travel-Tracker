@@ -15,6 +15,18 @@ export const filterPendingTrips = (trips) => trips.filter(trip => trip.status ==
 
 export const getAllTravelerTrips = (traveler, tripData) => sortTripsByDateDesc(filterTripsByUser(tripData, traveler.id));
 
+export const getTravelCost = (destination, duration, travelers) => {
+  const lodgingCost = destination.estimatedLodgingCostPerDay * duration;
+  const flightCost = destination.estimatedFlightCostPerPerson * travelers;
+  return lodgingCost + flightCost;
+};
+  
+export const getTotalTripCost = (destination, trip) => {
+  const totalCost = (destination.estimatedLodgingCostPerDay * trip.duration) + (destination.estimatedFlightCostPerPerson * trip.travelers);
+  return (totalCost * 1.1).toFixed(2);
+};
+  
+
 const filterTripsByYearAndStatus = (trips, year, status) =>
   trips.filter(trip => dayjs(trip.date).year() === year && trip.status === status);
 
