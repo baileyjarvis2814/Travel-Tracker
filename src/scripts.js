@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import './css/styles.css';
 import '../src/images/background.png'
 import dayjs from 'dayjs';
@@ -56,7 +57,7 @@ const allInputs = document.querySelectorAll('.input');
 
 
 function fetchAllData() {
-  // console.log('Fetching all data...');
+  console.log('Fetching all data...');
   Promise.all([fetchData('travelers'), fetchData('trips'), fetchData('destinations')])
     .then((data) => {
       console.log('Data fetching completed:', data);
@@ -69,17 +70,14 @@ function fetchAllData() {
       console.log('Trips data:', tripData);
       console.log('Destinations data:', destinationData);
   
-      currentTraveler = travelerData[0];
+      currentTraveler = travelerData.find(traveler => traveler.id === currentTraveler.id);
       console.log('Current Traveler:', currentTraveler);
   
       if (currentTraveler) {
-        // console.log('Displaying traveler dashboard...');
-        // displayTravelerDashboard();
         tripRepo = createTripRepository(currentTraveler, tripData);
         console.log('Trip Repository:', tripRepo);
-        // initialize();
-  
         displayLocationOptions(destinationData, locationOptions);
+        displayTravelerDashboard();
       } else {
         console.error('No current traveler found');
       }
@@ -89,17 +87,114 @@ function fetchAllData() {
     });
 }
 
-window.addEventListener('load', fetchAllData);
+function handleLogin(event) {
+  event.preventDefault();
+  console.log('Login attempt...');
+  
+  const username = usernameInput.value;
+  const password = passwordInput.value;
+  
+  console.log('Username:', username);
+  console.log('Password:', password);
+  
+  if (username === '' || password === '') {
+    console.log('Missing username or password');
+    return loginError.innerHTML = 'Please enter both username and password';
+  }
+  
+  const userId = parseInt(username.replace('traveler', ''));
+  console.log('User ID:', userId);
+  
+  if (username.startsWith('traveler') && password === 'travel' && !isNaN(userId)) {
+    fetchData(`travelers/${userId}`)
+      .then((data) => {
+        currentTraveler = data;
+        console.log('Logged in Traveler:', currentTraveler);
+  
+        if (currentTraveler) {
+          console.log('Login successful');
+          displayDashboard();
+        } else {
+          console.log('Invalid username or password');
+          loginError.innerHTML = 'Invalid username or password';
+        }
+      })
+      .catch((error) => {
+        console.error('Error logging in:', error);
+        loginError.innerHTML = 'Error logging in. Please try again.';
+      });
+  } else {
+    console.log('Invalid username or password');
+    loginError.innerHTML = 'Invalid username or password';
+  }
+}
+
+function displayDashboard() {
+  console.log('Displaying dashboard...');
+  hideElements([adventureWelcome, accountLoginForm]);
+  showElements([welcomeTraveler, userDataOverview, travelerInfo]);
+  welcomeTraveler.innerText = `Welcome back, ${currentTraveler.name.split(' ')[0]}!`;
+  fetchAllData();
+}
+
+function hideElements(elements) {
+  elements.forEach(element => element.classList.add('hidden'));
+}
+  
+function showElements(elements) {
+  elements.forEach(element => element.classList.remove('hidden'));
+}
+  
+function displayTravelerDashboard() {
+  console.log('Displaying dashboard for traveler:', currentTraveler);
+  
+  displayTrips(pastTrips, tripRepo.pastTrips);
+  
+  displayTrips(upcomingTrips, tripRepo.upcomingTrips);
+  
+  displayTravelerPendingTrips(tripRepo, destinationData, pendingTrips, dayjs, getTravelCost, getTotalTripCost);
+}
+
+
+function displayTrips(container, trips) { 
+  console.log('Displaying trips in container:', container.className);
+  container.innerHTML = '';
+  trips.forEach(trip => {
+    const destination = destinationData.find(dest => dest.id === trip.destinationID);
+    console.log('Trip:', trip);
+    console.log('Destination:', destination);
+    container.innerHTML += `
+        <div class="card">
+          <h4>${destination.destination}</h4>
+          <p>Date: ${dayjs(trip.date).format('MMMM D, YYYY')}</p>
+          <p>Duration: ${trip.duration} days</p>
+          <p>Travelers: ${trip.travelers}</p>
+          <p>Status: ${trip.status}</p>
+        </div>
+      `;
+  });
+}
+
+window.addEventListener('load', () => {
+  console.log('Page loaded. Initializing...');
+  hideElements([userDataOverview, travelerInfo, welcomeTraveler]);
+  showElements([adventureWelcome, accountLoginForm]);
+});
+submitLoginButton.addEventListener('click', handleLogin);
+logoutButton.addEventListener('click', handleLogout); 
 displayEstimate.addEventListener('click', (event) => {
   event.preventDefault();
+  console.log('Displaying trip estimate...');
   displayTripEstimate(destinationData, tripEstimate, locationOptions, calendarInput, durationInput, numberTravelersInput, errorMessage);
 });
 clearForm.addEventListener('click', (event) => {
   event.preventDefault();
+  console.log('Clearing form...');
   resetTripForm(allInputs, tripEstimate);
 });
 bookTrip.addEventListener('click', (event) => {
   event.preventDefault();
+  console.log('Booking new trip...');
   bookNewTrip(event);
 });
 
@@ -110,7 +205,7 @@ function bookNewTrip(event) {
     errorMessage.innerHTML = '';
   
     const newDestination = destinationData.find(destination => destination.id === parseInt(locationOptions.value));
-    console.log('New Destination:', newDestination); // Added for debugging
+    console.log('New Destination:', newDestination);
   
     if (!newDestination) {
       console.error('Destination not found for ID:', locationOptions.value);
@@ -127,10 +222,12 @@ function bookNewTrip(event) {
       status: "pending",
       suggestedActivities: []
     };
-  
+
+    console.log('New Trip:', newTrip);
+
     postData('trips', newTrip)
       .then(response => {
-        const postedTrip = response.newTrip; // Extracting the new trip from the response
+        const postedTrip = response.newTrip;
         console.log('Posted Trip:', postedTrip);
   
         tripRepo.allTravelerTrips.push(postedTrip);
@@ -144,6 +241,15 @@ function bookNewTrip(event) {
   }
   
   resetTripForm(allInputs, tripEstimate);
+}
+
+function handleLogout() { 
+  console.log('Logging out...');
+  currentTraveler = null;
+  tripRepo = null;
+  hideElements([welcomeTraveler, userDataOverview, travelerInfo]);
+  showElements([adventureWelcome, accountLoginForm]);
+  console.log('Logged out successfully.');
 }
 
 // function initialize() {
