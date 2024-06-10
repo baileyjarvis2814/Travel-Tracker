@@ -25,6 +25,38 @@ let destinationData;
 let currentTraveler;
 let tripRepo;
 
+//QUERY SELECTORS
+const loginFormButton = document.querySelector('.login-form-button');
+const welcomeTraveler = document.querySelector('.welcome-traveler');
+const logoutButton = document.querySelector('.account-logout');
+
+const adventureWelcome = document.querySelector('.adventure-welcome');
+const accountLoginForm = document.querySelector('.account-login-form');
+const usernameInput = document.getElementById('usernameInput');
+const passwordInput = document.getElementById('passwordInput');
+const loginError = document.querySelector('.login-error');
+const submitLoginButton = document.querySelector('.login-submit-button');
+
+const userDataOverview = document.querySelector('.traveler-data-overview');
+const pastTrips = document.querySelector('.past-trips-container');
+const upcomingTrips = document.querySelector('.upcoming-trips-container');
+const pendingTrips = document.querySelector('.pending-trips-container');
+const spentBreakdown = document.querySelector('.traveler-spent-breakdown');
+const travelerInfo = document.querySelector('.traveler-account-info');
+
+const locationOptions = document.querySelector('.location-options');
+const calendarInput = document.getElementById('calendarInput');
+const durationInput = document.getElementById('tripLength');
+const numberTravelersInput = document.getElementById('numberTravelers');
+const errorMessage = document.querySelector('.error-message');
+const displayEstimate = document.querySelector('.display-estimate');
+const tripEstimate = document.querySelector('.trip-estimate');
+const bookTrip = document.querySelector('.book-trip');
+const clearForm = document.querySelector('.new-search');
+
+const allInputs = document.querySelectorAll('.input');
+
+
 function fetchAllData() {
   console.log('Fetching all data...');
   Promise.all([fetchData('travelers'), fetchData('trips'), fetchData('destinations')])
