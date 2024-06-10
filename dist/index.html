@@ -8,27 +8,44 @@
   </head>
   <body>
     <header class="travel-tracker-header" id="travelTrackerHeader">
-      <h1 class="header-title" id="headerTitle">Travel Tracker</h1>
-      <button type="button" class="login-button hidden" id="accountLoginButton">Login</button>
+      <h1 class="header-title" id="headerTitle">Quantum Quest</h1>
+      <button type="button" class="login-form-button" id="loginFormButton">Login</button>
+      <div class="traveler-account-info">
+        <h2 class="welcome-traveler" id="welcomeTraveler"></h2>
+        <button type="button" class="account-logout" id="accountLogout">Logout</button>
+      </div>
     </header>
     <main>
-      <section class="multiverse-welcome hidden" id="multiverseWelcome">
-        <h2 class="homepage-welcome" id="homepageWelcome">Ready to explore the multiverse?</h2>
-        <!-- login inputs go here -->
+      <section class="adventure-welcome" id="adventureWelcome">
+        <h2 class="homepage-welcome" id="homepageWelcome">Use the Quantum Realm to vacation anywhere!</h2>
       </section>
-      <section class="traveler-data" id="travelerData">
+      <section class="account-login-form" id="accountLoginForm">
+        <form class="login-form">
+          <div>
+            <label for="usernameInput">Username:</label>
+            <input type="text" class="username-input" id="usernameInput" required>
+          </div>
+          <div>
+            <label for="passwordInput">Password:</label>
+            <input type="password" class="password-input" id="passwordInput" required>
+          </div>
+          <p class="login-error" id="loginError"></p>
+          <button type="submit" class="login-submit-button">Login to begin your Quantum Quest!</button>
+        </form>
+      </section>
+      <section class="traveler-data-overview" id="travelerDataOverview">
         <section class="trips-container" id="tripsContainer">
-          <article class="trip traveler-past-trips" id="travelerPastTrips">
-            <h3 class="title past-trips" id="pastTripTitle">Past Trips</h3>
-            <div class="past-trips-container" id="pastTripsContainer"></div>
+          <article class="trips traveler-past-trips" id="travelerPastTrips">
+            <h3 class="title past-trips" id="pastTripTitle">Past Adventures</h3>
+            <div class="container past-trips-container" id="pastTripsContainer"></div>
           </article>
           <article class="trips traveler-upcoming-trips">
-            <h3 class="title upcoming-trips" id="upcomingTripTitle">Upcoming Trips</h3>
-            <div class="upcoming-trips-container" id="upcomingTripsContainer"></div>
+            <h3 class="title upcoming-trips" id="upcomingTripTitle">Upcoming Adventures</h3>
+            <div class="container upcoming-trips-container" id="upcomingTripsContainer"></div>
           </article>
           <article class="trips traveler-pending-trips">
-            <h3 class="title pending-trips" id="pendingTripTitle">Pending Trips</h3>
-            <div class="pending-trips-container" id="pendingTripsContainer"></div>
+            <h3 class="title pending-trips" id="pendingTripTitle">Pending Adventures</h3>
+            <div class="container pending-trips-container" id="pendingTripsContainer"></div>
           </article>
         </section>
         <section class="spent-and-booking-container" id="spentAndBookingContainer">
@@ -37,8 +54,36 @@
             <div class="traveler-spent-breakdown" id="travelerSpentBreakdown"></div>
           </div>
           <div class="column trip-booking-form" id="tripBookingForm">
-            <h3 class="title booking-form" id="BookingFormTitle">Enter the Multiverse</h3>
-            <!-- form goes here-->
+            <h3 class="title booking-form" id="BookingFormTitle">Start a New Quest</h3>
+            <form autocomplete="off" class="booking-section" id="bookingSection">
+              <div class="form-input">
+                <label for="locationOptions">Choose a Location: </label>
+                <select name="destinations" aria-label="destination selection drop down" class="input location-options" id="locationOptions" required>
+                  <option disabled selected>choose your location</option>
+                </select>
+              </div>
+              <div class="form-input">
+                <label for="calendarInput">Departure Date: </label>
+                <input type="date" aria-label="calendar date input" min="2022-09-27" class="input calendar-input" id="calendarInput" required>
+              </div>
+              <div class="form-input">
+                <label for="tripLength">Trip Length: </label>
+                <input type="number" aria-label="trip length input" class="input trip-length" id="tripLength" min="0" pattern="[0-9]+" required>
+              </div>
+              <div class="form-input">
+                <label for="numberTravelers">Number of Travelers:</label>
+                <input type="number" aria-label="number of travelers input" class="input number-travelers" id="numberTravelers" min="0" pattern="[0-9]+" required>
+              </div>
+            </form>
+            <div class="booking-buttons">
+              <p class="error-message" id="errorMessage"></p>
+              <button class="display-estimate">Get Estimated Adventure Cost</button>
+              <p class="trip-estimate"></p>
+              <div>
+                <button class="book-trip">Book Quest</button>
+                <button class="new-search">Choose a new Quest</button>
+              </div>
+            </div>
           </div>
         </section>
       </section>
