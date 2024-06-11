@@ -9,7 +9,6 @@
   <body>
     <header class="travel-tracker-header" id="travelTrackerHeader">
       <h1 class="header-title" id="headerTitle">Quantum Quest</h1>
-      <!-- <button type="button" class="login-form-button" id="loginFormButton">Login</button> -->
       <div class="traveler-account-info">
         <h2 class="welcome-traveler" id="welcomeTraveler"></h2>
         <button type="button" class="account-logout" id="accountLogout">Logout</button>
@@ -68,11 +67,11 @@
               </div>
               <div class="form-input">
                 <label for="tripLength">Trip Length: </label>
-                <input type="number" aria-label="trip length input" class="input trip-length" id="tripLength" min="0" pattern="[0-9]+" required>
+                <input type="number" aria-label="trip length input" class="input trip-length" id="tripLength" min="1" pattern="[0-9]+" required>
               </div>
               <div class="form-input">
                 <label for="numberTravelers">Number of Travelers:</label>
-                <input type="number" aria-label="number of travelers input" class="input number-travelers" id="numberTravelers" min="0" pattern="[0-9]+" required>
+                <input type="number" aria-label="number of travelers input" class="input number-travelers" id="numberTravelers" min="1" pattern="[0-9]+" required>
               </div>
             </form>
             <div class="booking-buttons">
