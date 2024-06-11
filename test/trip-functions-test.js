@@ -14,7 +14,7 @@ import {
 } from '../src/trip-functions.js';
 import { mockTrip } from '../src/mock-data/mock-trip.js';
 import { mockDestination } from '../src/mock-data/mock-destination.js';
-import { mockTravelers } from '../src/mock-data/mock-traveler.js';
+import { mockTravelers } from '../src/mock-data/mock-Traveler.js';
 
 describe('Trip Functions', () => {
   let traveler, anotherTraveler, trips, emptyTrips, destinationData;
@@ -167,8 +167,6 @@ describe('Trip Functions', () => {
     it('should calculate the total spent for the year to date (happy path)', () => {
       const expectedSpent = ((7 * 500 + 2 * 1000) + (5 * 150 + 4 * 400) + (8 * 250 + 3 * 300) + (9 * 100 + 1 * 1200)) * 1.1;
       const result = getTotalSpentForYearToDate(trips, destinationData);
-      console.log('Expected Spent:', expectedSpent); // Add logging to inspect expectedSpent
-      console.log('Result:', result); // Add logging to inspect result
       expect(result).to.equal(expectedSpent.toFixed(2));
     });
   

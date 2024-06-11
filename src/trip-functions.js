@@ -53,13 +53,10 @@ export const getTotalSpentForYearToDate = (trips, destinationData) => {
     const destination = destinationData.find(dest => dest.id === trip.destinationID);
     if (destination) {
       const tripCost = (trip.duration * destination.estimatedLodgingCostPerDay) + (trip.travelers * destination.estimatedFlightCostPerPerson);
-      console.log('Trip Cost:', tripCost);
       return total + tripCost;
     }
     return total;
   }, 0);
-  
-  console.log('Total Spent This Year:', spentThisYear);
   
   return (spentThisYear * 1.1).toFixed(2);
 };

@@ -21,8 +21,6 @@ export function displayTripEstimate(destinationData, tripEstimate, destinationIn
       return errorMessage.innerHTML = 'Selected destination not found';
     }
   
-    console.log('Selected Destination:', getDestination);
-  
     const lodgingCost = getDestination.estimatedLodgingCostPerDay;
     const flightCost = getDestination.estimatedFlightCostPerPerson;
     const duration = parseInt(durationInput.value);
@@ -30,28 +28,22 @@ export function displayTripEstimate(destinationData, tripEstimate, destinationIn
   
     const getEstimate = ((lodgingCost * duration) + (flightCost * numberOfTravelers)) * 1.1;
   
-    console.log('Lodging Cost:', lodgingCost);
-    console.log('Flight Cost:', flightCost);
-    console.log('Duration:', duration);
-    console.log('Number of Travelers:', numberOfTravelers);
-    console.log('Estimated Cost:', getEstimate);
-  
     tripEstimate.innerHTML = `$ ${getEstimate.toFixed(2)}`;
   }
 }
   
 
 export function displayTravelerPendingTrips(tripRepo, destinationData, pendingTrips, dayjs, getTravelCost, getTotalTripCost) {
-  pendingTrips.innerHTML = '';
-  tripRepo.pendingTrips.forEach(trip => {
-    const destination = destinationData.find(destination => trip.destinationID === destination.id);
-    if (!destination) {
-      console.error('Destination not found for trip:', trip);
-      return;
-    }
-    pendingTrips.innerHTML += `
-        <div class="card single-pending-trip">
-          <img class="image-card" src="${destination.image}" alt="${destination.alt}"/>
+    pendingTrips.innerHTML = '';
+    tripRepo.pendingTrips.forEach(trip => {
+      const destination = destinationData.find(destination => trip.destinationID === destination.id);
+      if (!destination) {
+        console.error('Destination not found for trip:', trip);
+        return;
+      }
+      pendingTrips.innerHTML += `
+        <div class="card single-pending-trip" tabindex="0" aria-label="Pending trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
+          <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="50"/>
           <h4 class="location-name">${destination.destination}</h4>
           <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
           <sub>Travelers on This Trip: ${trip.travelers}</sub>
@@ -61,47 +53,45 @@ export function displayTravelerPendingTrips(tripRepo, destinationData, pendingTr
           <sub>Total Cost of Trip: $ ${getTotalTripCost(destination, trip)}</sub>
           <br><sub>${trip.status.toUpperCase()}</sub>
         </div>`;
-  });
-}
-
-export function displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTripsContainer, dayjs) {
+    });
+  }
+  
+  export function displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTripsContainer, dayjs, getTotalTripCost) {
     upcomingTripsContainer.innerHTML = '';
-    
     tripRepo.upcomingTrips.forEach(trip => {
       const destination = destinationData.find(destination => trip.destinationID === destination.id);
-    
+      
       if (destination) {
-        console.log('Upcoming Trip:', trip);
         const lodgingCost = destination.estimatedLodgingCostPerDay * trip.duration;
         const flightCost = destination.estimatedFlightCostPerPerson * trip.travelers;
         const totalCost = getTotalTripCost(destination, trip);
   
         upcomingTripsContainer.innerHTML += `
-            <div class="card single-upcoming-trip">
-              <img class="image-card" src="${destination.image}" alt="${destination.alt}"/>
-              <h4 class="location-name">${destination.destination}</h4>
-              <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
-              <sub>Travelers on This Trip: ${trip.travelers}</sub>
-              <sub>Trip Length: ${trip.duration} days</sub>
-              <sub>Trip Lodging Cost: $ ${lodgingCost.toFixed(2)}</sub>
-              <sub>Trip Flight Cost: $ ${flightCost.toFixed(2)}</sub>
-              <sub>Total Cost of Trip: $ ${totalCost}</sub>
-              <br><sub>${trip.status.toUpperCase()}</sub>
-            </div>`;
+          <div class="card single-upcoming-trip" tabindex="0" aria-label="Upcoming trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
+            <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="50"/>
+            <h4 class="location-name">${destination.destination}</h4>
+            <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
+            <sub>Travelers on This Trip: ${trip.travelers}</sub>
+            <sub>Trip Length: ${trip.duration} days</sub>
+            <sub>Trip Lodging Cost: $ ${lodgingCost.toFixed(2)}</sub>
+            <sub>Trip Flight Cost: $ ${flightCost.toFixed(2)}</sub>
+            <sub>Total Cost of Trip: $ ${totalCost}</sub>
+            <br><sub>${trip.status.toUpperCase()}</sub>
+          </div>`;
       }
     });
   }
 
-  export function displayTotalSpentThisYear(tripRepo, destinationData, spentBreakdown, dayjs) {
-    const totalSpent = getTotalSpentForYearToDate(tripRepo.allTravelerTrips, destinationData);
+export function displayTotalSpentThisYear(tripRepo, destinationData, spentBreakdown) {
+  const totalSpent = getTotalSpentForYearToDate(tripRepo.allTravelerTrips, destinationData);
     
-    spentBreakdown.innerHTML = `
+  spentBreakdown.innerHTML = `
       <div class="total-spent-container">
         <h4>Total Spent This Year</h4>
         <p class="total-spent">$ ${totalSpent}</p>
       </div>
     `;
-  }
+}
 
 export function resetTripForm(allInputs, tripEstimate) {
   allInputs.forEach(input => input.value = '');
