@@ -14,7 +14,7 @@ import {
   getTotalTripCost
 } from '../src/trip-functions.js';
 import { createDestination } from './destination-object.js';
-import { displayLocationOptions, displayTripEstimate, displayTravelerPendingTrips, resetTripForm } from './domUpdates.js';
+import { displayLocationOptions, displayTripEstimate, displayTravelerPendingTrips, resetTripForm, displayTravelerUpcomingTrips, displayTotalSpentThisYear  } from './domUpdates.js';
 import { createTrip } from './trip-object.js';
 
 //GLOBAL VARIABLES
@@ -69,6 +69,9 @@ function fetchAllData() {
       console.log('Travelers data:', travelerData);
       console.log('Trips data:', tripData);
       console.log('Destinations data:', destinationData);
+
+    //   currentTraveler = travelerData[0]; // Example: Use the first traveler
+    //   console.log('Current Traveler:', currentTraveler);
   
       currentTraveler = travelerData.find(traveler => traveler.id === currentTraveler.id);
       console.log('Current Traveler:', currentTraveler);
@@ -150,9 +153,12 @@ function displayTravelerDashboard() {
   
   displayTrips(pastTrips, tripRepo.pastTrips);
   
-  displayTrips(upcomingTrips, tripRepo.upcomingTrips);
-  
+  displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTrips, dayjs
+    // , getTravelCost, getTotalTripCost);
+  );
   displayTravelerPendingTrips(tripRepo, destinationData, pendingTrips, dayjs, getTravelCost, getTotalTripCost);
+
+  displayTotalSpentThisYear(tripRepo, destinationData, spentBreakdown, dayjs);
 }
 
 
@@ -219,7 +225,7 @@ function bookNewTrip(event) {
       travelers: numberTravelersInput.value,
       date: dayjs(calendarInput.value).format('YYYY/MM/DD'),
       duration: durationInput.value,
-      status: "pending",
+      status: "approved",
       suggestedActivities: []
     };
 

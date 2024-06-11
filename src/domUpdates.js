@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { getTravelCost, getTotalTripCost, getTotalSpentForYearToDate } from '../src/trip-functions.js';
+
 export function displayLocationOptions(destinationData, locationOptions) {
   locationOptions.innerHTML = '';
   destinationData.forEach(destination => {
@@ -61,6 +63,45 @@ export function displayTravelerPendingTrips(tripRepo, destinationData, pendingTr
         </div>`;
   });
 }
+
+export function displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTripsContainer, dayjs) {
+    upcomingTripsContainer.innerHTML = '';
+    
+    tripRepo.upcomingTrips.forEach(trip => {
+      const destination = destinationData.find(destination => trip.destinationID === destination.id);
+    
+      if (destination) {
+        console.log('Upcoming Trip:', trip);
+        const lodgingCost = destination.estimatedLodgingCostPerDay * trip.duration;
+        const flightCost = destination.estimatedFlightCostPerPerson * trip.travelers;
+        const totalCost = getTotalTripCost(destination, trip);
+  
+        upcomingTripsContainer.innerHTML += `
+            <div class="card single-upcoming-trip">
+              <img class="image-card" src="${destination.image}" alt="${destination.alt}"/>
+              <h4 class="location-name">${destination.destination}</h4>
+              <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
+              <sub>Travelers on This Trip: ${trip.travelers}</sub>
+              <sub>Trip Length: ${trip.duration} days</sub>
+              <sub>Trip Lodging Cost: $ ${lodgingCost.toFixed(2)}</sub>
+              <sub>Trip Flight Cost: $ ${flightCost.toFixed(2)}</sub>
+              <sub>Total Cost of Trip: $ ${totalCost}</sub>
+              <br><sub>${trip.status.toUpperCase()}</sub>
+            </div>`;
+      }
+    });
+  }
+
+  export function displayTotalSpentThisYear(tripRepo, destinationData, spentBreakdown, dayjs) {
+    const totalSpent = getTotalSpentForYearToDate(tripRepo.allTravelerTrips, destinationData);
+    
+    spentBreakdown.innerHTML = `
+      <div class="total-spent-container">
+        <h4>Total Spent This Year</h4>
+        <p class="total-spent">$ ${totalSpent}</p>
+      </div>
+    `;
+  }
 
 export function resetTripForm(allInputs, tripEstimate) {
   allInputs.forEach(input => input.value = '');
