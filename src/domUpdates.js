@@ -42,17 +42,17 @@ export function displayTravelerPendingTrips(tripRepo, destinationData, pendingTr
       return;
     }
     pendingTrips.innerHTML += `
-        <div class="card single-pending-trip" tabindex="0" aria-label="Pending trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
-          <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="50"/>
-          <h4 class="location-name">${destination.destination}</h4>
-          <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
-          <sub>Travelers on This Trip: ${trip.travelers}</sub>
-          <sub>Trip Length: ${trip.duration} days</sub>
-          <sub>Trip Lodging Cost: $ ${(destination.estimatedLodgingCostPerDay * trip.duration).toFixed(2)}</sub>
-          <sub>Trip Flight Cost: $ ${(destination.estimatedFlightCostPerPerson * trip.travelers).toFixed(2)}</sub>
-          <sub>Total Cost of Trip: $ ${getTotalTripCost(destination, trip)}</sub>
-          <br><sub>${trip.status.toUpperCase()}</sub>
-        </div>`;
+          <div class="card single-pending-trip" tabindex="0" aria-label="Pending trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
+            <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="100"/>
+            <h4 class="location-name">${destination.destination}</h4>
+            <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
+            <sub>Travelers on This Trip: ${trip.travelers}</sub>
+            <sub>Trip Length: ${trip.duration} days</sub>
+            <sub>Trip Lodging Cost: $ ${(destination.estimatedLodgingCostPerDay * trip.duration).toFixed(2)}</sub>
+            <sub>Trip Flight Cost: $ ${(destination.estimatedFlightCostPerPerson * trip.travelers).toFixed(2)}</sub>
+            <sub>Total Cost of Trip: $ ${getTotalTripCost(destination, trip)}</sub>
+            <br><sub>${trip.status.toUpperCase()}</sub>
+          </div>`;
   });
 }
   
@@ -60,24 +60,24 @@ export function displayTravelerUpcomingTrips(tripRepo, destinationData, upcoming
   upcomingTripsContainer.innerHTML = '';
   tripRepo.upcomingTrips.forEach(trip => {
     const destination = destinationData.find(destination => trip.destinationID === destination.id);
-      
     if (destination) {
+      console.log('Upcoming Trip:', trip);
       const lodgingCost = destination.estimatedLodgingCostPerDay * trip.duration;
       const flightCost = destination.estimatedFlightCostPerPerson * trip.travelers;
       const totalCost = getTotalTripCost(destination, trip);
   
       upcomingTripsContainer.innerHTML += `
           <div class="card single-upcoming-trip" tabindex="0" aria-label="Upcoming trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
-            <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="50"/>
-            <h4 class="location-name">${destination.destination}</h4>
-            <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
-            <sub>Travelers on This Trip: ${trip.travelers}</sub>
-            <sub>Trip Length: ${trip.duration} days</sub>
-            <sub>Trip Lodging Cost: $ ${lodgingCost.toFixed(2)}</sub>
-            <sub>Trip Flight Cost: $ ${flightCost.toFixed(2)}</sub>
-            <sub>Total Cost of Trip: $ ${totalCost}</sub>
-            <br><sub>${trip.status.toUpperCase()}</sub>
-          </div>`;
+           <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="100"/>
+                <h4 class="location-name">${destination.destination}</h4>
+                <sub>Trip Date: ${dayjs(trip.date).format('M/D/YYYY')}</sub>
+                <sub>Travelers on This Trip: ${trip.travelers}</sub>
+                <sub>Trip Length: ${trip.duration} days</sub>
+                <sub>Trip Lodging Cost: $ ${lodgingCost.toFixed(2)}</sub>
+                <sub>Trip Flight Cost: $ ${flightCost.toFixed(2)}</sub>
+                <sub>Total Cost of Trip: $ ${totalCost}</sub>
+                <br><sub>${trip.status.toUpperCase()}</sub>
+              </div>`;
     }
   });
 }
