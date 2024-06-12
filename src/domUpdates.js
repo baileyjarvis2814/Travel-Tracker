@@ -34,14 +34,14 @@ export function displayTripEstimate(destinationData, tripEstimate, destinationIn
   
 
 export function displayTravelerPendingTrips(tripRepo, destinationData, pendingTrips, dayjs, getTravelCost, getTotalTripCost) {
-    pendingTrips.innerHTML = '';
-    tripRepo.pendingTrips.forEach(trip => {
-      const destination = destinationData.find(destination => trip.destinationID === destination.id);
-      if (!destination) {
-        console.error('Destination not found for trip:', trip);
-        return;
-      }
-      pendingTrips.innerHTML += `
+  pendingTrips.innerHTML = '';
+  tripRepo.pendingTrips.forEach(trip => {
+    const destination = destinationData.find(destination => trip.destinationID === destination.id);
+    if (!destination) {
+      console.error('Destination not found for trip:', trip);
+      return;
+    }
+    pendingTrips.innerHTML += `
         <div class="card single-pending-trip" tabindex="0" aria-label="Pending trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
           <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="50"/>
           <h4 class="location-name">${destination.destination}</h4>
@@ -53,20 +53,20 @@ export function displayTravelerPendingTrips(tripRepo, destinationData, pendingTr
           <sub>Total Cost of Trip: $ ${getTotalTripCost(destination, trip)}</sub>
           <br><sub>${trip.status.toUpperCase()}</sub>
         </div>`;
-    });
-  }
+  });
+}
   
-  export function displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTripsContainer, dayjs, getTotalTripCost) {
-    upcomingTripsContainer.innerHTML = '';
-    tripRepo.upcomingTrips.forEach(trip => {
-      const destination = destinationData.find(destination => trip.destinationID === destination.id);
+export function displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTripsContainer, dayjs, getTravelCost, getTotalTripCost) {
+  upcomingTripsContainer.innerHTML = '';
+  tripRepo.upcomingTrips.forEach(trip => {
+    const destination = destinationData.find(destination => trip.destinationID === destination.id);
       
-      if (destination) {
-        const lodgingCost = destination.estimatedLodgingCostPerDay * trip.duration;
-        const flightCost = destination.estimatedFlightCostPerPerson * trip.travelers;
-        const totalCost = getTotalTripCost(destination, trip);
+    if (destination) {
+      const lodgingCost = destination.estimatedLodgingCostPerDay * trip.duration;
+      const flightCost = destination.estimatedFlightCostPerPerson * trip.travelers;
+      const totalCost = getTotalTripCost(destination, trip);
   
-        upcomingTripsContainer.innerHTML += `
+      upcomingTripsContainer.innerHTML += `
           <div class="card single-upcoming-trip" tabindex="0" aria-label="Upcoming trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
             <img class="image-card" src="${destination.image}" alt="${destination.alt}" width="100" height="50"/>
             <h4 class="location-name">${destination.destination}</h4>
@@ -78,9 +78,9 @@ export function displayTravelerPendingTrips(tripRepo, destinationData, pendingTr
             <sub>Total Cost of Trip: $ ${totalCost}</sub>
             <br><sub>${trip.status.toUpperCase()}</sub>
           </div>`;
-      }
-    });
-  }
+    }
+  });
+}
 
 export function displayTotalSpentThisYear(tripRepo, destinationData, spentBreakdown) {
   const totalSpent = getTotalSpentForYearToDate(tripRepo.allTravelerTrips, destinationData);
