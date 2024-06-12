@@ -148,16 +148,16 @@ function showElements(elements) {
 
 function displayTravelerDashboard() {
   displayTrips(pastTrips, tripRepo.pastTrips);
-  displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTrips, dayjs, getTotalTripCost);
+  displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTrips, dayjs, getTravelCost, getTotalTripCost);
   displayTravelerPendingTrips(tripRepo, destinationData, pendingTrips, dayjs, getTravelCost, getTotalTripCost);
   displayTotalSpentThisYear(tripRepo, destinationData, spentBreakdown, dayjs);
 }
 
 function displayTrips(container, trips) {
-    container.innerHTML = '';
-    trips.forEach(trip => {
-      const destination = destinationData.find(dest => dest.id === trip.destinationID);
-      container.innerHTML += `
+  container.innerHTML = '';
+  trips.forEach(trip => {
+    const destination = destinationData.find(dest => dest.id === trip.destinationID);
+    container.innerHTML += `
           <div class="card" tabindex="0" aria-label="Trip to ${destination.destination} on ${dayjs(trip.date).format('MMMM D, YYYY')} for ${trip.duration} days with ${trip.travelers} travelers. Status: ${trip.status}">
             <h4>${destination.destination}</h4>
             <p>Date: ${dayjs(trip.date).format('MMMM D, YYYY')}</p>
@@ -166,30 +166,52 @@ function displayTrips(container, trips) {
             <p>Status: ${trip.status}</p>
           </div>
         `;
-    });
-  }
+  });
+}
 
 function bookNewTrip(event) {
   event.preventDefault();
+    
   if (locationOptions.value === '' || calendarInput.value === '' || durationInput.value === '' || numberTravelersInput.value === '' || durationInput.value < 1 || numberTravelersInput.value < 1) {
-    return errorMessage.innerHTML = 'Please enter valid inputs in each field';
+    errorMessage.innerHTML = 'Please enter valid inputs in each field';
+    setTimeout(() => {
+      errorMessage.innerHTML = ''; 
+    }, 3000);
+    return;
   } else {
     errorMessage.innerHTML = '';
-
+    
     const selectedDate = dayjs(calendarInput.value).format('YYYY/MM/DD');
-    const existingApprovedTrip = tripRepo.upcomingTrips.find(trip => trip.date === selectedDate && trip.status === 'approved');
-
-    if (existingApprovedTrip) {
-      return errorMessage.innerHTML = 'You already have an approved trip on this date. Please choose a different date.';
+      
+    if (dayjs(selectedDate).isBefore(dayjs(), 'day')) {
+      errorMessage.innerHTML = 'You cannot book a trip in the past. Please choose a future date.';
+      setTimeout(() => {
+        errorMessage.innerHTML = ''; 
+      }, 3000);
+      return;
     }
-
+  
+    const existingApprovedTrip = tripRepo.upcomingTrips.find(trip => trip.date === selectedDate && trip.status === 'approved');
+    
+    if (existingApprovedTrip) {
+      errorMessage.innerHTML = 'You already have an approved trip on this date. Please choose a different date.';
+      setTimeout(() => {
+        errorMessage.innerHTML = ''; 
+      }, 3000);
+      return;
+    }
+    
     const newDestination = destinationData.find(destination => destination.id === parseInt(locationOptions.value));
-
+    
     if (!newDestination) {
       console.error('Destination not found for ID:', locationOptions.value);
-      return errorMessage.innerHTML = 'Selected destination not found';
+      errorMessage.innerHTML = 'Selected destination not found';
+      setTimeout(() => {
+        errorMessage.innerHTML = ''; 
+      }, 3000);
+      return;
     }
-
+    
     const newTrip = {
       id: Date.now(),
       userID: currentTraveler.id,
@@ -197,23 +219,29 @@ function bookNewTrip(event) {
       travelers: numberTravelersInput.value,
       date: selectedDate,
       duration: durationInput.value,
-      status: "approved",
+      status: "pending", // change this to "approved" or "pending" as needed
       suggestedActivities: []
     };
-
+    
     postData('trips', newTrip)
       .then(response => {
         const postedTrip = response.newTrip;
+    
         tripRepo.allTravelerTrips.push(postedTrip);
-        tripRepo.upcomingTrips.push(postedTrip);
-        displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTrips, dayjs, getTravelCost, getTotalTripCost);
+        if (postedTrip.status === 'approved') {
+          tripRepo.upcomingTrips.push(postedTrip);
+          displayTravelerUpcomingTrips(tripRepo, destinationData, upcomingTrips, dayjs);
+        } else if (postedTrip.status === 'pending') {
+          tripRepo.pendingTrips.push(postedTrip);
+          displayTravelerPendingTrips(tripRepo, destinationData, pendingTrips, dayjs, getTravelCost, getTotalTripCost);
+        }
       })
       .catch(error => {
         console.error('Error posting new trip:', error);
         alert(`Error posting new trip: ${error.message}`);
       });
   }
-
+    
   resetTripForm(allInputs, tripEstimate);
 }
 
